@@ -15,6 +15,8 @@ export default function Footer({ darkMode }: FooterProps) {
     { label: "About", id: "about" },
     { label: "Skills", id: "skills" },
     { label: "Projects", id: "projects" },
+    { label: "Repos", id: "repos" },
+    { label: "Certificados", id: "certificates" },
     { label: "Contact", id: "contact" },
   ];
 
