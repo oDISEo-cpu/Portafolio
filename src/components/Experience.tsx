@@ -9,7 +9,7 @@ interface ExperienceProps {
 const experiences = [
   {
     title: "Freelance Full Stack Developer",
-    period: "2024 - Presente",
+    period: "2023 - Presente",
     company: "Independiente",
     description: "Desarrollo de aplicaciones web completas, APIs REST y soluciones de automatización con IA.",
     responsibilities: [
