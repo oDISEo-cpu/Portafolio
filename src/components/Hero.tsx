@@ -137,21 +137,6 @@ export default function Hero({ darkMode }: HeroProps) {
               transition={{ delay: 0.7 }}
               className="flex flex-wrap gap-4"
             >
-              <motion.button
-                whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(99, 102, 241, 0.3)" }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  const target =
-                    document.getElementById("projects") ||
-                    document.getElementById("Projects") ||
-                    document.getElementById("portfolio");
-                  target?.scrollIntoView({ behavior: "smooth", block: "start" });
-                }}
-                className="px-6 py-3 gradient-bg text-white font-semibold rounded-xl shadow-lg flex items-center gap-2"
-              >
-                <FolderOpen size={18} />
-                Ver Proyectos
-              </motion.button>
               <motion.a
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

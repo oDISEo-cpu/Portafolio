@@ -1,286 +1,263 @@
-import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
-import { Mail, Phone, MapPin, Github, Linkedin, Send, CheckCircle } from "lucide-react";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  MapPin, Mail, Phone, Github, Linkedin,
+  Send, Lightbulb, CheckCircle2, AlertCircle, Loader2,
+} from "lucide-react";
+import emailjs from "@emailjs/browser";
+
+// === PEGA AQUÍ TUS 3 CLAVES DE EMAILJS ===
+const EMAILJS_SERVICE_ID = "service_qvz8xuh";
+const EMAILJS_TEMPLATE_ID = "template_pdqb797";
+const EMAILJS_PUBLIC_KEY = "pfm1i63Sw50cnzCoP";
 
 interface ContactProps {
   darkMode: boolean;
 }
 
+const infoCards = [
+  { icon: MapPin, label: "Ubicación", value: "Caracas, Venezuela", href: "" },
+  { icon: Mail, label: "Email", value: "dm30525331@gmail.com", href: "mailto:dm30525331@gmail.com" },
+  { icon: Phone, label: "Teléfono", value: "+58 412 7610660", href: "tel:+584127610660" },
+];
+
 export default function Contact({ darkMode }: ContactProps) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      setFormData({ name: "", email: "", subject: "", message: "" });
-      setTimeout(() => setIsSubmitted(false), 3000);
-    }, 1500);
+    setStatus("sending");
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          from_name: form.name,
+          from_email: form.email,
+          subject: form.subject,
+          message: form.message,
+        },
+        { publicKey: EMAILJS_PUBLIC_KEY }
+      );
+      setStatus("sent");
+      setForm({ name: "", email: "", subject: "", message: "" });
+      setTimeout(() => setStatus("idle"), 6000);
+    } catch (err) {
+      console.error("Error al enviar el mensaje:", err);
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 6000);
+    }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const contactInfo = [
-    { icon: MapPin, label: "Ubicación", value: "Caracas, Venezuela", href: "#" },
-    { icon: Mail, label: "Email", value: "dm30525331@gmail.com", href: "mailto:dm30525331@gmail.com" },
-    { icon: Phone, label: "Teléfono", value: "+58 412 7610660", href: "tel:+584127610660" },
-  ];
-
-  const socials = [
-    { icon: Github, label: "GitHub", href: "https://github.com/oDISEo-cpu", color: "hover:text-white" },
-    { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com/in/diego-alexander-molina-caro-a82757368", color: "hover:text-blue-400" },
-  ];
+  const inputClasses = `w-full px-4 py-3 rounded-xl border outline-none transition-all focus:ring-2 focus:ring-indigo-500/50 ${
+    darkMode
+      ? "bg-slate-900/60 border-slate-700 text-white placeholder-gray-500"
+      : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400"
+  }`;
 
   return (
-    <section
-      id="contact"
-      ref={ref}
-      className={`py-24 relative overflow-hidden ${darkMode ? "bg-slate-900" : "bg-gray-50"}`}
-    >
-      {/* Background */}
-      <div className="absolute top-0 left-0 w-96 h-96 rounded-full opacity-10 blur-3xl bg-indigo-500" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-10 blur-3xl bg-purple-500" />
+    <section id="contact" className={`py-24 relative overflow-hidden ${darkMode ? "bg-slate-950" : "bg-white"}`}>
+      {/* Encabezado */}
+      <div className="text-center mb-16 px-4">
+        <h2 className={`text-4xl sm:text-5xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>
+          ¿Trabajamos <span className="gradient-text">juntos?</span>
+        </h2>
+        <p className={`mt-4 text-lg ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+          Estoy disponible para proyectos freelance y oportunidades full-time
+        </p>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <span className={`text-sm font-semibold tracking-wider uppercase ${darkMode ? "text-indigo-400" : "text-indigo-600"}`}>
-            Contacto
-          </span>
-          <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold mt-2 ${darkMode ? "text-white" : "text-gray-900"}`}>
-            ¿Trabajamos <span className="gradient-text">juntos?</span>
-          </h2>
-          <p className={`mt-4 text-lg max-w-2xl mx-auto ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-            Estoy disponible para proyectos freelance y oportunidades full-time
-          </p>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-          {/* Left - Contact Info */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.2 }}
-            className="space-y-8"
-          >
-            {/* Contact Cards */}
-            <div className="space-y-4">
-              {contactInfo.map((info, index) => (
-                <motion.a
-                  key={info.label}
-                  href={info.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.3 + index * 0.1 }}
-                  whileHover={{ x: 5 }}
-                  className={`flex items-center gap-4 p-4 rounded-xl transition-all ${
-                    darkMode
-                      ? "bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50"
-                      : "bg-white border border-gray-200 hover:border-indigo-300 shadow-sm"
-                  }`}
-                >
-                  <div className="p-3 rounded-xl gradient-bg">
-                    <info.icon size={20} className="text-white" />
-                  </div>
-                  <div>
-                    <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                      {info.label}
-                    </p>
-                    <p className={`font-medium ${darkMode ? "text-white" : "text-gray-900"}`}>
-                      {info.value}
-                    </p>
-                  </div>
-                </motion.a>
-              ))}
-            </div>
-
-            {/* Social Links */}
-            <div>
-              <h3 className={`font-semibold mb-4 ${darkMode ? "text-white" : "text-gray-900"}`}>
-                Sígueme
-              </h3>
-              <div className="flex gap-4">
-                {socials.map((social, index) => (
-                  <motion.a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ delay: 0.5 + index * 0.1 }}
-                    whileHover={{ scale: 1.1, y: -3 }}
-                    whileTap={{ scale: 0.9 }}
-                    className={`p-4 rounded-xl transition-all ${
-                      darkMode
-                        ? "bg-slate-800 border border-slate-700 text-gray-400 hover:border-indigo-500/50"
-                        : "bg-white border border-gray-200 text-gray-600 hover:border-indigo-300 shadow-sm"
-                    } ${social.color}`}
-                  >
-                    <social.icon size={24} />
-                  </motion.a>
-                ))}
-              </div>
-            </div>
-
-            {/* Decorative card */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-start">
+        {/* Columna izquierda: info */}
+        <div className="space-y-6">
+          {infoCards.map((card) => (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.6 }}
-              className={`p-6 rounded-2xl ${
-                darkMode
-                  ? "bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20"
-                  : "bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200"
+              key={card.label}
+              whileHover={{ x: 5 }}
+              className={`flex items-center gap-4 p-5 rounded-2xl border ${
+                darkMode ? "bg-slate-800/60 border-slate-700" : "bg-white border-gray-200 shadow-md"
               }`}
             >
-              <p className="text-2xl mb-2">💡</p>
-              <p className={`font-medium ${darkMode ? "text-white" : "text-gray-900"}`}>
-                ¿Tienes una idea?
-              </p>
-              <p className={`text-sm mt-1 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-                Conviértela en realidad con soluciones web inteligentes. 
-                Respondo en menos de 24 horas.
-              </p>
-            </motion.div>
-          </motion.div>
-
-          {/* Right - Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.3 }}
-          >
-            <form
-              onSubmit={handleSubmit}
-              className={`p-6 md:p-8 rounded-2xl space-y-5 ${
-                darkMode
-                  ? "bg-slate-800/50 border border-slate-700"
-                  : "bg-white border border-gray-200 shadow-lg"
-              }`}
-            >
-              {/* Name */}
-              <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                  Nombre
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className={`w-full px-4 py-3 rounded-xl border transition-all focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none ${
-                    darkMode
-                      ? "bg-slate-900 border-slate-600 text-white placeholder-gray-500"
-                      : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400"
-                  }`}
-                  placeholder="Tu nombre"
-                />
+              <div className="w-12 h-12 rounded-xl gradient-bg flex items-center justify-center shrink-0">
+                <card.icon size={22} className="text-white" />
               </div>
-
-              {/* Email */}
               <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className={`w-full px-4 py-3 rounded-xl border transition-all focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none ${
-                    darkMode
-                      ? "bg-slate-900 border-slate-600 text-white placeholder-gray-500"
-                      : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400"
-                  }`}
-                  placeholder="tu@email.com"
-                />
-              </div>
-
-              {/* Subject */}
-              <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                  Asunto
-                </label>
-                <input
-                  type="text"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                  className={`w-full px-4 py-3 rounded-xl border transition-all focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none ${
-                    darkMode
-                      ? "bg-slate-900 border-slate-600 text-white placeholder-gray-500"
-                      : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400"
-                  }`}
-                  placeholder="¿En qué puedo ayudarte?"
-                />
-              </div>
-
-              {/* Message */}
-              <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                  Mensaje
-                </label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={4}
-                  className={`w-full px-4 py-3 rounded-xl border transition-all focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none resize-none ${
-                    darkMode
-                      ? "bg-slate-900 border-slate-600 text-white placeholder-gray-500"
-                      : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400"
-                  }`}
-                  placeholder="Cuéntame sobre tu proyecto..."
-                />
-              </div>
-
-              {/* Submit Button */}
-              <motion.button
-                type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                disabled={isSubmitting}
-                className="w-full py-3.5 gradient-bg text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 disabled:opacity-70"
-              >
-                {isSubmitting ? (
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
-                  />
-                ) : isSubmitted ? (
-                  <>
-                    <CheckCircle size={18} />
-                    ¡Mensaje Enviado!
-                  </>
+                <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>{card.label}</p>
+                {card.href ? (
+                  <a
+                    href={card.href}
+                    className={`font-bold ${darkMode ? "text-white hover:text-indigo-400" : "text-gray-900 hover:text-indigo-600"} transition-colors`}
+                  >
+                    {card.value}
+                  </a>
                 ) : (
-                  <>
-                    <Send size={18} />
-                    Enviar Mensaje
-                  </>
+                  <p className={`font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>{card.value}</p>
                 )}
-              </motion.button>
-            </form>
-          </motion.div>
+              </div>
+            </motion.div>
+          ))}
+
+          {/* Redes */}
+          <div>
+            <h3 className={`text-lg font-bold mb-4 ${darkMode ? "text-white" : "text-gray-900"}`}>Sígueme</h3>
+            <div className="flex gap-4">
+              <motion.a
+                whileHover={{ y: -4, scale: 1.05 }}
+                href="https://github.com/oDISEo-cpu"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+                className={`w-14 h-14 rounded-xl flex items-center justify-center border transition-colors ${
+                  darkMode
+                    ? "bg-slate-800 border-slate-700 text-gray-300 hover:border-indigo-500 hover:text-indigo-400"
+                    : "bg-white border-gray-200 text-gray-700 hover:border-indigo-500 hover:text-indigo-600"
+                }`}
+              >
+                <Github size={22} />
+              </motion.a>
+              <motion.a
+                whileHover={{ y: -4, scale: 1.05 }}
+                href="https://www.linkedin.com/in/diego-alexander-molina-caro-a82757368"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className={`w-14 h-14 rounded-xl flex items-center justify-center border transition-colors ${
+                  darkMode
+                    ? "bg-slate-800 border-slate-700 text-gray-300 hover:border-indigo-500 hover:text-indigo-400"
+                    : "bg-white border-gray-200 text-gray-700 hover:border-indigo-500 hover:text-indigo-600"
+                }`}
+              >
+                <Linkedin size={22} />
+              </motion.a>
+            </div>
+          </div>
+
+          {/* Card idea */}
+          <div className={`p-6 rounded-2xl border ${
+            darkMode ? "bg-indigo-500/10 border-indigo-500/20" : "bg-indigo-50 border-indigo-100"
+          }`}>
+            <Lightbulb size={24} className="text-yellow-400 mb-3" />
+            <h3 className={`font-bold text-lg mb-2 ${darkMode ? "text-white" : "text-gray-900"}`}>
+              ¿Tienes una idea?
+            </h3>
+            <p className={darkMode ? "text-gray-400" : "text-gray-600"}>
+              Conviértela en realidad con soluciones web inteligentes. Respondo en menos de 24 horas.
+            </p>
+          </div>
         </div>
+
+        {/* Columna derecha: formulario */}
+        <motion.form
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          onSubmit={handleSubmit}
+          className={`p-8 rounded-2xl border space-y-5 ${
+            darkMode ? "bg-slate-800/60 border-slate-700" : "bg-white border-gray-200 shadow-xl"
+          }`}
+        >
+          <div>
+            <label className={`block text-sm font-semibold mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+              Nombre
+            </label>
+            <input
+              type="text"
+              name="name"
+              required
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Tu nombre"
+              className={inputClasses}
+            />
+          </div>
+
+          <div>
+            <label className={`block text-sm font-semibold mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              required
+              value={form.email}
+              onChange={handleChange}
+              placeholder="tu@email.com"
+              className={inputClasses}
+            />
+          </div>
+
+          <div>
+            <label className={`block text-sm font-semibold mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+              Asunto
+            </label>
+            <input
+              type="text"
+              name="subject"
+              required
+              value={form.subject}
+              onChange={handleChange}
+              placeholder="¿En qué puedo ayudarte?"
+              className={inputClasses}
+            />
+          </div>
+
+          <div>
+            <label className={`block text-sm font-semibold mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+              Mensaje
+            </label>
+            <textarea
+              name="message"
+              required
+              rows={5}
+              value={form.message}
+              onChange={handleChange}
+              placeholder="Cuéntame sobre tu proyecto..."
+              className={`${inputClasses} resize-none`}
+            />
+          </div>
+
+          <motion.button
+            whileHover={{ scale: status === "sending" ? 1 : 1.02 }}
+            whileTap={{ scale: status === "sending" ? 1 : 0.98 }}
+            type="submit"
+            disabled={status === "sending"}
+            className={`w-full py-4 gradient-bg text-white font-semibold rounded-xl flex items-center justify-center gap-2 shadow-lg transition-opacity ${
+              status === "sending" ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+          >
+            {status === "sending" ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+            {status === "sending" ? "Enviando..." : "Enviar Mensaje"}
+          </motion.button>
+
+          {/* Mensajes de estado */}
+          {status === "sent" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-3 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
+            >
+              <CheckCircle2 size={20} />
+              <p className="text-sm font-medium">¡Mensaje enviado! Te responderé lo antes posible. 🚀</p>
+            </motion.div>
+          )}
+          {status === "error" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400"
+            >
+              <AlertCircle size={20} />
+              <p className="text-sm font-medium">Hubo un error al enviar. Intenta de nuevo o escríbeme directo a mi correo.</p>
+            </motion.div>
+          )}
+        </motion.form>
       </div>
     </section>
   );

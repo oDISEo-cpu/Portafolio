@@ -109,7 +109,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
             transition={{ type: "spring", duration: 1, delay: 0.2 }}
             className="w-20 h-20 mx-auto mb-6 rounded-2xl gradient-bg flex items-center justify-center shadow-2xl"
           >
-            <span className="text-white font-bold text-2xl">DM</span>
+            <span className="text-white font-bold text-2xl">CV</span>
           </motion.div>
 
           {/* Name */}

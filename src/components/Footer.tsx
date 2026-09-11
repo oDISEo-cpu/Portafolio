@@ -37,9 +37,7 @@ export default function Footer({ darkMode }: FooterProps) {
             <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
               © 2026 Diego Molina. Todos los derechos reservados.
             </p>
-            <p className={`text-xs mt-1 flex items-center gap-1 justify-center md:justify-start ${darkMode ? "text-gray-500" : "text-gray-400"}`}>
-              Hecho con <Heart size={12} className="text-red-400 fill-red-400" /> en Caracas, Venezuela
-            </p>
+            
           </div>
 
           {/* Quick Links */}

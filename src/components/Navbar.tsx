@@ -69,15 +69,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => scrollToSection("home")}
-            className="relative w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-lg"
-          >
-            <span className="text-white font-bold text-sm">DM</span>
-            <div className="absolute inset-0 rounded-xl gradient-bg opacity-50 blur-md -z-10" />
-          </motion.button>
+        
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
