@@ -7,10 +7,9 @@ interface AboutProps {
 }
 
 const stats = [
-  { icon: Briefcase, label: "Proyectos", value: 3, suffix: "+" },
+  { icon: Briefcase, label: "Proyectos", value: 10, suffix: "+" },
   { icon: Code2, label: "Tecnologías", value: 10, suffix: "+" },
-  { icon: Database, label: "Años Exp.", value: 1, suffix: "+" },
-  { icon: Brain, label: "Clientes", value: 5, suffix: "+" },
+  { icon: Database, label: "Años Exp.", value: 3, suffix: "+" },
 ];
 
 function AnimatedCounter({ target, suffix }: { target: number; suffix: string }) {

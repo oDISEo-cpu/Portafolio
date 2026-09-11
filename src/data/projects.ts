@@ -18,7 +18,7 @@ export const projects: Project[] = [
     tags: ["Python", "Ollama", "Gemma", "Qwen", "Prompt Engineering"],
     category: "ia",
     features: ["Procesamiento local de IA", "Automatización inteligente", "Sin dependencias externas", "Multi-modelo"],
-    github: "https://github.com/oDISEo-cpu",
+    github: "https://github.com/oDISEo-cpu/Pagina_Ventas_Tecnologicas",
     gradient: "from-emerald-500 to-cyan-500",
   },
   {

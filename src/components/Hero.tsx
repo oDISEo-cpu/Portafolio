@@ -17,6 +17,7 @@ const techBadges = [
 
 export default function Hero({ darkMode }: HeroProps) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [fotoError, setFotoError] = useState(false);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -38,7 +39,6 @@ export default function Hero({ darkMode }: HeroProps) {
     >
       {/* Background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Gradient orbs */}
         <motion.div
           className="absolute top-1/4 -left-32 w-96 h-96 rounded-full opacity-20 blur-3xl"
           style={{ background: "radial-gradient(circle, #6366F1, transparent)" }}
@@ -55,8 +55,6 @@ export default function Hero({ darkMode }: HeroProps) {
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-10 blur-3xl"
           style={{ background: "radial-gradient(circle, #06B6D4, transparent)" }}
         />
-
-        {/* Grid pattern */}
         <div
           className={`absolute inset-0 opacity-[0.03] ${darkMode ? "opacity-[0.05]" : ""}`}
           style={{
@@ -70,7 +68,6 @@ export default function Hero({ darkMode }: HeroProps) {
         <div className="grid lg:grid-cols-5 gap-12 items-center">
           {/* Left Content - 60% */}
           <div className="lg:col-span-3 space-y-8">
-            {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -83,7 +80,6 @@ export default function Hero({ darkMode }: HeroProps) {
               </span>
             </motion.div>
 
-            {/* Title */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -100,7 +96,6 @@ export default function Hero({ darkMode }: HeroProps) {
               </p>
             </motion.div>
 
-            {/* Location */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -111,7 +106,6 @@ export default function Hero({ darkMode }: HeroProps) {
               <span className="text-sm">Caracas, Venezuela</span>
             </motion.div>
 
-            {/* Tech badges */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -137,7 +131,6 @@ export default function Hero({ darkMode }: HeroProps) {
               ))}
             </motion.div>
 
-            {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -176,7 +169,6 @@ export default function Hero({ darkMode }: HeroProps) {
               transition={{ delay: 0.5, type: "spring" }}
               className="relative"
             >
-              {/* Main 3D Card */}
               <motion.div
                 animate={{
                   rotateY: mousePos.x * 0.3,
@@ -186,17 +178,27 @@ export default function Hero({ darkMode }: HeroProps) {
                 style={{ transformStyle: "preserve-3d", perspective: "1000px" }}
                 className="relative mx-auto w-72 h-80"
               >
-                {/* Card background */}
                 <div className="absolute inset-0 rounded-3xl gradient-bg opacity-80 blur-xl" />
                 <div className={`relative w-full h-full rounded-3xl overflow-hidden border-2 ${
                   darkMode ? "border-slate-700 bg-slate-800" : "border-gray-200 bg-white"
                 } shadow-2xl`}>
-                  {/* Profile placeholder */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center space-y-4">
-                      <div className="w-28 h-28 mx-auto rounded-full gradient-bg flex items-center justify-center shadow-xl">
-                        <span className="text-white text-4xl font-bold">DM</span>
-                      </div>
+                      {/* >>> FOTO CON RESPALDO AUTOMÁTICO <<< */}
+                      {fotoError ? (
+                        <div className="w-32 h-32 rounded-full gradient-bg flex items-center justify-center mx-auto border-4 border-purple-500/40 shadow-xl shadow-purple-500/20">
+                          <span className="text-4xl font-bold text-white">DM</span>
+                        </div>
+                      ) : (
+                        <div className="w-32 h-32 rounded-full overflow-hidden mx-auto border-4 border-purple-500/40 shadow-xl shadow-purple-500/20">
+                          <img
+                            src="/foto-diego.png"
+                            alt="Diego Molina"
+                            className="w-full h-full object-cover"
+                            onError={() => setFotoError(true)}
+                          />
+                        </div>
+                      )}
                       <div>
                         <p className={`font-bold text-lg ${darkMode ? "text-white" : "text-gray-900"}`}>Diego Molina</p>
                         <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Full Stack Developer</p>
@@ -211,7 +213,6 @@ export default function Hero({ darkMode }: HeroProps) {
                 </div>
               </motion.div>
 
-              {/* Floating elements */}
               <motion.div
                 className="absolute -top-4 -right-4 w-16 h-16 rounded-2xl gradient-bg flex items-center justify-center shadow-lg"
                 animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }}
@@ -239,7 +240,6 @@ export default function Hero({ darkMode }: HeroProps) {
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
