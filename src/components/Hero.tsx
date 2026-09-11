@@ -140,15 +140,23 @@ export default function Hero({ darkMode }: HeroProps) {
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(99, 102, 241, 0.3)" }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() => {
+                  const target =
+                    document.getElementById("projects") ||
+                    document.getElementById("Projects") ||
+                    document.getElementById("portfolio");
+                  target?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
                 className="px-6 py-3 gradient-bg text-white font-semibold rounded-xl shadow-lg flex items-center gap-2"
               >
                 <FolderOpen size={18} />
                 Ver Proyectos
               </motion.button>
-              <motion.button
+              <motion.a
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                href="/CV-Diego-Molina.pdf"
+                download="CV-Diego-Molina.pdf"
                 className={`px-6 py-3 font-semibold rounded-xl border-2 flex items-center gap-2 transition-all ${
                   darkMode
                     ? "border-slate-700 text-gray-300 hover:border-indigo-500 hover:text-indigo-400"
@@ -157,7 +165,7 @@ export default function Hero({ darkMode }: HeroProps) {
               >
                 <Download size={18} />
                 Descargar CV
-              </motion.button>
+              </motion.a>
             </motion.div>
           </div>
 

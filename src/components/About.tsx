@@ -153,7 +153,7 @@ export default function About({ darkMode }: AboutProps) {
               { name: "JavaScript / TypeScript", level: 90, color: "from-yellow-400 to-amber-500" },
               { name: "React / Node.js", level: 85, color: "from-blue-400 to-indigo-500" },
               { name: "Python / SQL", level: 80, color: "from-green-400 to-emerald-500" },
-              { name: "IA / LLMs", level: 75, color: "from-purple-400 to-violet-500" },
+              { name: "IA / LLMs", level: 89, color: "from-purple-400 to-violet-500" },
               { name: "HTML5 / CSS3", level: 92, color: "from-orange-400 to-red-500" },
               { name: "APIs REST", level: 88, color: "from-cyan-400 to-teal-500" },
             ].map((skill, index) => (
