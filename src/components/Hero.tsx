@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, Download, FolderOpen, Sparkles, Code2, Database, Brain, MapPin } from "lucide-react";
+import { usePortfolio } from "../context/PortfolioContext";
 
 interface HeroProps {
   darkMode: boolean;
@@ -18,6 +19,25 @@ const techBadges = [
 export default function Hero({ darkMode }: HeroProps) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [fotoError, setFotoError] = useState(false);
+  const { isAdminMode, toggleAdminMode } = usePortfolio();
+  const [clickCount, setClickCount] = useState(0);
+  const [secretMsg, setSecretMsg] = useState<string | null>(null);
+  const clickTimer = useRef<number | null>(null);
+
+  // 🔐 Trigger oculto: 3 clics rápidos en el icono de base de datos
+  const handleSecretClick = () => {
+    const next = clickCount + 1;
+    if (next >= 3) {
+      toggleAdminMode();
+      setSecretMsg(isAdminMode ? "🔒 Modo edición desactivado" : "🔓 Modo edición activado");
+      setClickCount(0);
+      setTimeout(() => setSecretMsg(null), 2500);
+    } else {
+      setClickCount(next);
+      if (clickTimer.current) window.clearTimeout(clickTimer.current);
+      clickTimer.current = window.setTimeout(() => setClickCount(0), 1200);
+    }
+  };
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -119,7 +139,10 @@ export default function Hero({ darkMode }: HeroProps) {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.6 + index * 0.1 }}
                   whileHover={{ scale: 1.1, y: -2 }}
+                  onClick={badge.label === "MySQL" ? handleSecretClick : undefined}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium ${
+                    badge.label === "MySQL" ? "cursor-pointer select-none" : ""
+                  } ${
                     darkMode
                       ? "bg-slate-800/80 text-gray-300 border border-slate-700"
                       : "bg-gray-100 text-gray-700 border border-gray-200"
@@ -137,6 +160,21 @@ export default function Hero({ darkMode }: HeroProps) {
               transition={{ delay: 0.7 }}
               className="flex flex-wrap gap-4"
             >
+              <motion.button
+                whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(99, 102, 241, 0.3)" }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  const target =
+                    document.getElementById("projects") ||
+                    document.getElementById("Projects") ||
+                    document.getElementById("portfolio");
+                  target?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+                className="px-6 py-3 gradient-bg text-white font-semibold rounded-xl shadow-lg flex items-center gap-2"
+              >
+                <FolderOpen size={18} />
+                Ver Proyectos
+              </motion.button>
               <motion.a
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -198,7 +236,11 @@ export default function Hero({ darkMode }: HeroProps) {
                       </div>
                       <div className="flex justify-center gap-3">
                         <Code2 size={20} className="text-indigo-400" />
-                        <Database size={20} className="text-purple-400" />
+                        <Database
+                          size={20}
+                          className="text-purple-400 cursor-pointer select-none"
+                          onClick={handleSecretClick}
+                        />
                         <Brain size={20} className="text-cyan-400" />
                       </div>
                     </div>
@@ -215,9 +257,10 @@ export default function Hero({ darkMode }: HeroProps) {
               </motion.div>
 
               <motion.div
-                className="absolute -bottom-4 -left-4 w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-500 flex items-center justify-center shadow-lg"
+                className="absolute -bottom-4 -left-4 w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-500 flex items-center justify-center shadow-lg cursor-pointer"
                 animate={{ y: [0, 10, 0], rotate: [0, -5, 0] }}
                 transition={{ duration: 3.5, repeat: Infinity }}
+                onClick={handleSecretClick}
               >
                 <Database size={22} className="text-white" />
               </motion.div>
@@ -249,6 +292,13 @@ export default function Hero({ darkMode }: HeroProps) {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Aviso del modo secreto */}
+      {secretMsg && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] px-5 py-2.5 rounded-full bg-slate-800/95 border border-indigo-500/40 text-white text-sm font-medium shadow-2xl backdrop-blur">
+          {secretMsg}
+        </div>
+      )}
     </section>
   );
 }
