@@ -12,7 +12,6 @@ import Certificates from "./components/Certificates";
 import Experience from "./components/Experience";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
-import AdminButton from "./components/AdminButton";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -68,7 +67,6 @@ export default function App() {
               <Contact darkMode={darkMode} />
             </main>
             <Footer darkMode={darkMode} />
-            <AdminButton darkMode={darkMode} />
           </motion.div>
         )}
       </div>
